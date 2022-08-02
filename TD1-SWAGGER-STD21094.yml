@@ -17,6 +17,7 @@ servers:
 tags:
 - name: Students
 - name: Courses
+- name: Group
 paths:
   /students:
     post:
@@ -27,15 +28,17 @@ paths:
       requestBody:
         description: Student object needed to add a new student
         content:
-          application/json:
+          json:
             schema:
-              $ref: '#/components/schemas/NewStudent'
+              type: array
+              items:
+                $ref: '#/components/schemas/NewStudent'
         required: true
       responses:
         200:
           description: Success
           content:
-            application/json:
+            json:
               schema:
                 type: array
                 items:
@@ -63,7 +66,7 @@ paths:
         200:
           description: Success
           content:
-            application/json:
+            json:
               schema:
                 type: array
                 items: 
@@ -75,7 +78,7 @@ paths:
     get:
       tags:
         - Students
-      summary: Get the specified student
+      summary: Get info of specified student
       operationId: getStudent
       parameters:
         - name: id
@@ -87,7 +90,7 @@ paths:
         200:
           description: Success
           content:
-            application/json:
+            json:
               schema:
                 $ref: '#/components/schemas/Student'
         400:
@@ -111,7 +114,7 @@ paths:
             text/plain:
               schema:
                 type: string
-                example: "Returns the id of the deleted student"
+                example: "Operation success"
         400:
           description: "bad request"
           content: {}
@@ -127,14 +130,14 @@ paths:
       requestBody:
         description: everything about student except id
         content:
-          application/json:
+          json:
             schema:
               $ref: '#/components/schemas/NewStudent'
       responses:
         200:
           description: "success"
           content:
-            application/json:
+            json:
               schema:
                 $ref: '#/components/schemas/Student'
         400:
@@ -143,7 +146,7 @@ paths:
       tags:
         - Students
       description: |
-        performs update on one of or combination of: 
+        update on one of or combination of: 
         * name
         * group
       parameters:
@@ -155,14 +158,17 @@ paths:
       requestBody:
         description: partial info about the student
         content: {}
+          
         
       responses:
         200:
           description: "success"
           content:
-            application/json:
+            json:
               schema:
-                $ref: '#/components/schemas/Student'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Student'
         
   /courses:
     get:
@@ -187,7 +193,7 @@ paths:
         200:
           description: List Course
           content:
-            application/json:
+            json:
               schema:
                 type: array
                 items:
@@ -195,7 +201,7 @@ paths:
         400:
           description: Bad Request
           content:
-            application/json:
+            json:
               schema:
                 type: object
                 properties:
@@ -212,14 +218,14 @@ paths:
       requestBody:
         description: Course
         content:
-          application/json:
+          json:
             schema:
               $ref: '#/components/schemas/NewCourse'
       responses:
         200:
           description: course
           content:
-            application/json:
+            json:
               schema:
                 type: array
                 items:
@@ -240,13 +246,54 @@ paths:
         200:
           description: Success
           content:
-            application/json:
+            json:
               schema:
                 $ref: '#/components/schemas/Course'
         400:
           description: Bad Request
           content: {}
-      
+  /group:
+    get:
+      tags:
+        - Group
+      summary: Get a list of student in groupe
+      operationId: getCourses
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            format: int64
+          required: true    
+        - name: page_size
+          in: query
+          schema:
+            type: integer
+            format: int32
+          required: true
+      responses:
+        200:
+          description: List Course
+          content:
+            json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+        400:
+          description: Bad Request
+          content:
+            json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: "400_BAD_REQUEST"
+                  message:
+                    type: string
+                    example: "Parameter missing"
+ 
 components:
   schemas:
     Student:
